@@ -1,12 +1,15 @@
 require('dotenv').config();
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 global.mongoose = require('mongoose');
-var uri = 'mongodb://vimal:123456@ds159978.mlab.com:59978/bookstore';
+//var uri = 'mongodb://vimal:123456@ds159978.mlab.com:59978/bookstore'; // for testing
+
+var uri = 'mongodb://vimal:123456@ds155582.mlab.com:55582/librarydb';
 global.db = mongoose.connect(uri);
 global.Schema = mongoose.Schema;
 
@@ -20,6 +23,8 @@ global.modelLibrary = mongoose.model('Library', schemalibrary);
 var schemabook = new Schema({
 	bookname: String,
 	libraryId:String,
+userIssuedToId: {type: String, default:''},
+	isIssued :{type: Number, default: 0},
 	time: Number
 }, {
 collection: 'Books'});
@@ -50,6 +55,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+ secret: 'cookie_secretsss',
+ resave: true,
+ saveUninitialized: true
+}));
 app.use(express.static(path.join(__dirname, 'public')));
 app.locals.baseURL = 'http://' + process.env.APP_HOST + ':' + process.env.APP_PORT;
 
@@ -59,9 +69,11 @@ app.use('/users', users);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
+
   err.status = 404;
   next(err);
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {

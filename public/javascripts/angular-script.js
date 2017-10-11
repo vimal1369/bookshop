@@ -11,16 +11,20 @@
 bookApp.controller('bookcontroller', ['$scope', '$rootScope','$location', '$window','$filter','$timeout','bookContent', function($scope, $rootScope, $location, $window,$filter,$timeout,bookContent) {
 $scope.librarObj = [];
 $scope.booksObj  = [];
+$scope.userInfo = [];
 /*
 * register library
 */     
+
 $scope.regLibrary = function(data){
-	
+
 	var librarydata = {'libraryname':data.libraryname};
 	bookContent.saveLibrary(librarydata).then(function(response){
 		if(response){		
 		bookContent.getAllLibraries().then(function(res){
 			$scope.librarObj = res;
+			$scope.libraryname ='';
+			
 		});
 		}
 		else{
@@ -36,6 +40,8 @@ $scope.saveBook = function(data){
 		if(response){
 		bookContent.getAllbooks().then(function(books){
 			$scope.booksObj = books;
+			$scope.bookname ='';
+			$scope.library ='';
 		});
 		}
 		else{
@@ -50,19 +56,47 @@ $scope.regUser = function(data){
 	bookContent.saveUser(userdata).then(function(response){
 		alert('registered Successfully with Userid'+ response._id);
 		console.log('Userdata'+ response);
+		$scope.name = '';
+		$scope.email = '';
+		$scope.library ='';
+		$scope.password ='';
 	});
 }
 
 
 $scope.login = function(data){
 	
-	var userdata = {'email':data.email,'password':data.password};
+	var userdata = {'email':data.email,'password':data.lpassword};
 	bookContent.loginUser(userdata).then(function(response){
 	//	alert('registered Successfully with Userid'+ response._id);
-		console.log( response);
+		if( response){
+			alert('logged in successfully');
+			$window.location.href = '/userArea';
+		}else{
+			alert('login credentails are incorrect');
+		}
 	});
 }
 
+$scope.loginUserinfo = function(){
+	
+	bookContent.getloggedinuserInfo().then(function(res){
+			$scope.userInfo = res;
+		}); 
+	
+}
+
+$scope.isseuBook = function(bookid,flag){
+	
+	bookContent.saveIssuedBooks({'bookId':bookid,'flag':flag}).then(function(res){
+		if(res){
+			bookContent.getAllbooks().then(function(books){
+			$scope.booksObj = books;
+		});
+		}
+		}); 
+	
+}
 $scope.init = function(){
 	bookContent.getAllLibraries().then(function(res){
 			$scope.librarObj = res;
@@ -72,6 +106,16 @@ $scope.init = function(){
 			$scope.booksObj = books;
 		});
 	
+}
+
+$scope.logout = function(){
+	bookContent.logout().then(function(res){
+			if(res){
+				alert('logged out successfully');
+				$window.location.href = '/';
+			}
+		}); 
+		
 }
 
 
@@ -151,6 +195,44 @@ $scope.init = function(){
 		  loginUser: function(data){
              var defer = $q.defer();
              $http.post('/loginUser',data).then(function(response) {
+                 defer.resolve(response.data);
+             }, function(error) {
+                 defer.reject(error);
+             }, function(process) {
+                 defer.notify(process);
+             });
+             return defer.promise;
+
+         }
+		 ,
+		  getloggedinuserInfo: function(data){
+             var defer = $q.defer();
+             $http.post('/getloggedinuserInfo',data).then(function(response) {
+                 defer.resolve(response.data);
+             }, function(error) {
+                 defer.reject(error);
+             }, function(process) {
+                 defer.notify(process);
+             });
+             return defer.promise;
+
+         },
+	   saveIssuedBooks: function(data){
+             var defer = $q.defer();
+             $http.post('/saveIssuedBooks',data).then(function(response) {
+                 defer.resolve(response.data);
+             }, function(error) {
+                 defer.reject(error);
+             }, function(process) {
+                 defer.notify(process);
+             });
+             return defer.promise;
+
+         }
+		 ,
+		 logout: function(data){
+             var defer = $q.defer();
+             $http.post('/logout',data).then(function(response) {
                  defer.resolve(response.data);
              }, function(error) {
                  defer.reject(error);

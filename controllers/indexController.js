@@ -173,10 +173,95 @@ exports.loginUser = function(req,res,next){
       
     }
 	loginveruify(email,pass).then(function(response){
-		res.send(response);
+		if(pass == response[0].password){
+			req.session.uid = response[0]._id;
+			req.session.name = response[0].name;
+			req.session.libraryId = response[0].libraryId;
+			
+			res.send(true);
+		}else{
+			res.send(false);
+		}
 		
 	})
 	
 	
 }
 
+exports.userArea = function(req, res, next) {
+	if (req.session.uid) {
+       res.render('userArea');
+  }else{
+     res.redirect('/');
+     return;
+  }
+
+};
+
+exports.getloggedinuserInfo = function(req, res, next) {
+	function loginUserInfo() {
+        //   console.log(userdata); 
+
+        return new Promise(function(resolve, reject) {
+			
+             modelUser.find({'_id':req.session.uid}, function(err, userinfo){
+        if(err) throw err;
+        resolve(userinfo);
+     });
+
+        });
+      
+    }
+	loginUserInfo().then(function(response){
+		
+		if(response){			
+			res.send(response[0]);
+		}else{
+			res.send(false);
+		}
+		
+	})
+
+};
+
+exports.logout = function(req,res,next){
+	
+	req.session.destroy(function() {
+   console.log("user logged out.")
+   res.send(true);
+  });
+  
+	
+};
+
+
+
+exports.saveIssuedBooks = function(req,res,next){
+	 let bookid = req.body.bookId;
+	 let flag = req.body.flag;
+	
+	function UpdateBook(bookid) {
+        //   console.log(userdata); 
+
+        return new Promise(function(resolve, reject) {
+                modelBooks.update({'_id':bookid}, 
+    { $set: {'userIssuedToId': req.session.uid, 'isIssued': flag } }, function(err, result) { 
+
+      if(err) { throw err; } 
+      
+     if(result) {
+			resolve(result)
+		}
+
+    }); 
+	
+		
+        });
+    }
+	UpdateBook(bookid).then(function(response){
+		res.send(response);
+		
+	})
+	
+	
+}

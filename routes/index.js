@@ -12,6 +12,11 @@ router.post('/getAllbooks',index_controller.getAllbooks);
 router.post('/getAllLibraries',index_controller.getAllLibraries);
 router.get('/user',index_controller.user); 
 router.post('/saveUser',index_controller.saveUser); 
-router.post('/loginUser',index_controller.loginUser);
+router.post('/loginUser',index_controller.loginUser); 
+router.get('/userArea',index_controller.userArea); 
+router.post('/getloggedinuserInfo',index_controller.getloggedinuserInfo);
+router.post('/logout',index_controller.logout);
+router.post('/saveIssuedBooks',index_controller.saveIssuedBooks);
+
 
 module.exports = router;

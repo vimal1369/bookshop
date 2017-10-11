@@ -1,0 +1,35 @@
+<%- include('partials/header') %>
+
+<div class="container" ng-init="loginUserinfo()" >
+
+  <h2>welcome {{userInfo.name}} </h2>
+  
+</div>
+ 
+    </div>
+	<div class="col-md-12">
+	 <div class="col-md-6">
+<h2>Books Available under the library</h2>
+<ul class="list-group" ng-repeat="book in booksObj |orderBy:'time':true">
+  <li class="list-group-item" ng-if="book.libraryId == userInfo.libraryId "><span>{{book.bookname}} || {{book.time * 1000 | date:'dd-MM-yy'}}</span>  || 
+  <a ng-if="!book.isIssued" ng-click="isseuBook(book._id,1)" class="btn-success
+btn-info btn-link">Issue It</a> </a>  
+  <a ng-if="book.isIssued"  class="btn-success
+btn-info btn-link">Not AVAILABLE</a></li>
+
+</ul>
+</div>
+
+<div class="col-md-6">
+<h2>Books Issued </h2>
+<ul class="list-group" ng-repeat="book in booksObj |orderBy:'time':true">
+  <li class="list-group-item" ng-if="book.libraryId == userInfo.libraryId && book.userIssuedToId == userInfo._id"><span>{{book.bookname}} || {{book.time * 1000 | date:'dd-MM-yy'}}</span>  || 
+  <a ng-if="book.isIssued" ng-click="isseuBook(book._id,0)" class="btn-success
+btn-info btn-link">Return It</a> </a>  
+  <a ng-if="!book.isIssued"  class="btn-success
+btn-info btn-link">Returned to Library successfully </a></li>
+
+</ul>
+</div>
+</div>
+   <%- include('partials/footer') %>

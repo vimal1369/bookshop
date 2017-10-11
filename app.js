@@ -5,6 +5,25 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+global.mongoose = require('mongoose');
+var uri = 'mongodb://vimal:123456@ds159978.mlab.com:59978/bookstore';
+global.db = mongoose.connect(uri);
+global.Schema = mongoose.Schema;
+
+var schemalibrary = new Schema({
+	name: String,
+	time: Number
+}, {
+collection: 'Library'});
+global.modelLibrary = mongoose.model('Library', schemalibrary);
+
+var schemabook = new Schema({
+	bookname: String,
+	libraryId:String,
+	time: Number
+}, {
+collection: 'Books'});
+global.modelBooks = mongoose.model('Books', schemabook);
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -43,6 +62,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 
 
 app.set('port',process.env.APP_PORT || 3000);

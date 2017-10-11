@@ -34,6 +34,10 @@
       <a href="/addBook" target="_blank" class="btn btn-default btn-info">add book</a>
       </div>
     </div>
+	 <div class="form-group">        
+      <a href="/user" target="_blank" class="btn btn-default btn-primary">register/sign User</button>
+      </a>
+    </div>
 <h2>library list</h2>
 <ul class="list-group" ng-repeat="library in librarObj |orderBy:'time':true">
   <li class="list-group-item" ><a ng-click="click(library._id)">{{library.name}} || {{library.time * 1000 | date:'dd-MM-yy'}}</a></li>

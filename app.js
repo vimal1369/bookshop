@@ -25,6 +25,17 @@ var schemabook = new Schema({
 collection: 'Books'});
 global.modelBooks = mongoose.model('Books', schemabook);
 
+var schemaUser = new Schema({
+	name: String,
+	email:String,
+	libraryId:String,
+	password: String,
+	time: Number
+}, {
+collection: 'User'});
+global.modelUser = mongoose.model('User', schemaUser);
+
+
 var index = require('./routes/index');
 var users = require('./routes/users');
 

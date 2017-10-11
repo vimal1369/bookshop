@@ -44,6 +44,25 @@ $scope.saveBook = function(data){
 	});
 }
 
+$scope.regUser = function(data){
+	
+	var userdata = {'name':data.name,'email':data.email,'library':data.library,'password':data.password};
+	bookContent.saveUser(userdata).then(function(response){
+		alert('registered Successfully with Userid'+ response._id);
+		console.log('Userdata'+ response);
+	});
+}
+
+
+$scope.login = function(data){
+	
+	var userdata = {'email':data.email,'password':data.password};
+	bookContent.loginUser(userdata).then(function(response){
+	//	alert('registered Successfully with Userid'+ response._id);
+		console.log( response);
+	});
+}
+
 $scope.init = function(){
 	bookContent.getAllLibraries().then(function(res){
 			$scope.librarObj = res;
@@ -107,6 +126,31 @@ $scope.init = function(){
 		  savebook: function(data){
              var defer = $q.defer();
              $http.post('/savebook',data).then(function(response) {
+                 defer.resolve(response.data);
+             }, function(error) {
+                 defer.reject(error);
+             }, function(process) {
+                 defer.notify(process);
+             });
+             return defer.promise;
+
+         }
+		 ,
+		  saveUser: function(data){
+             var defer = $q.defer();
+             $http.post('/saveUser',data).then(function(response) {
+                 defer.resolve(response.data);
+             }, function(error) {
+                 defer.reject(error);
+             }, function(process) {
+                 defer.notify(process);
+             });
+             return defer.promise;
+
+         },
+		  loginUser: function(data){
+             var defer = $q.defer();
+             $http.post('/loginUser',data).then(function(response) {
                  defer.resolve(response.data);
              }, function(error) {
                  defer.reject(error);

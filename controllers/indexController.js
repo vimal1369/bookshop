@@ -116,3 +116,67 @@ exports.getAllbooks = function(req,res,next){
 	
 }
 
+
+exports.user = function(req, res, next) {
+   res.render('user');
+};
+
+
+exports.saveUser = function(req,res,next){
+	 let name = req.body.name;
+	 let library = req.body.library;
+	 let email = req.body.email;
+	 let pass = req.body.password;
+	function saveUser(name,library,email,pass) {
+        //   console.log(userdata); 
+
+        return new Promise(function(resolve, reject) {
+             /**var librarySchema = new Schema({
+									name  :  { type: String, default: '' }
+								});
+		var libraryModel = mongoose.model('Library', librarySchema);**/
+	
+		var saveUsers = new modelUser({'name': name,'libraryId': library,'email':email,'password':pass,'time': Math.floor(Date.now() / 1000)})
+		saveUsers.save(function (err, result) {
+
+			if (err) throw err;
+
+		if(result) {
+			resolve(result)
+		}
+			});
+        });
+    }
+	saveUser(name,library,email,pass).then(function(response){
+		res.send(response);
+		
+	})
+	
+	
+}
+
+
+exports.loginUser = function(req,res,next){
+	 let email = req.body.email;
+	 let pass = req.body.password;
+	function loginveruify(email,pass) {
+        //   console.log(userdata); 
+
+        return new Promise(function(resolve, reject) {
+			
+             modelUser.find({'email':email}, function(err, userinfo){
+        if(err) throw err;
+        resolve(userinfo);
+     });
+
+        });
+      
+    }
+	loginveruify(email,pass).then(function(response){
+		res.send(response);
+		
+	})
+	
+	
+}
+
